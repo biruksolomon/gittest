@@ -1,4 +1,4 @@
-package com.ecommerce.Ecommerce;
+package demo;
 
 public class HelloResponse {
     private String message;

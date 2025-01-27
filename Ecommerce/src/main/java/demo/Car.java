@@ -1,4 +1,4 @@
-package com.ecommerce.Ecommerce;
+package demo;
 
 import org.springframework.stereotype.Component;
 
