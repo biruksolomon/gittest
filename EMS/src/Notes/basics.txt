@@ -1,0 +1,118 @@
+-----------------JWT------------------
+String token = Jwts.builder()
+    .setSubject(username)  // Store username in token
+    .setIssuedAt(new Date())  // Token creation time
+    .setExpiration(new Date(System.currentTimeMillis() + expirationTime))  // Expiry
+    .signWith(SignatureAlgorithm.HS256, secretKey)  // Sign token with secret key
+    .compact();
+    ------------------------------
+    setSubject(username): This sets the subject of the JWT to the provided username. The subject is typically the user’s identifier (like their username or user ID).
+    setIssuedAt(new Date()): This sets the issued date of the token to the current date and time (the time when the token is generated).
+    setExpiration(new Date(System.currentTimeMillis() + 86400000)): This sets the expiration date of the token. The value 86400000 represents 1 day in milliseconds. So, the token will expire 24 hours after it is issued.
+    signWith(SignatureAlgorithm.HS256, secretKey): This signs the token using the HS256 algorithm (HMAC SHA-256) with the provided secretKey.
+    compact(): This converts the JWT object to a string that can be sent in HTTP headers or URLs.
+-----------------------------------
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+eyJzdWIiOiJqb2huZG9lIiwicm9sZSI6IkFETUlOIn0.
+HMACSHA256
+Part	Purpose
+Header 🏷️	Contains the token type (JWT) and the algorithm (HS256).
+Payload 📦	Contains user data (e.g., username, role, expiry).
+Signature 🔐	Ensures the token has not been tampered with.
+
+
+key generator code
+import java.security.SecureRandom;
+import java.util.Base64;
+
+public class SecretKeyGenerator {
+    public static void main(String[] args) {
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] key = new byte[32]; // 256-bit key
+        secureRandom.nextBytes(key);
+        String secretKey = Base64.getEncoder().encodeToString(key);
+        System.out.println("Generated Secret Key: " + secretKey);
+    }
+}
+
+setx JWT_SECRET "your_jwt_secret_key"
+using this command we can add the key in enviromental variable and we can use
+jwt.secret=${JWT_SECRET}  # Use the environment variable JWT_SECRET or using enviromental system variable with out using command
+
+2️⃣ jwt.expiration=86400000
+🔹 What it does:
+
+Sets the expiration time for JWT access tokens.
+86400000 milliseconds = 1 day (24 hours).
+After this time, the token becomes invalid, and the user must log in again.
+3️⃣ jwt.refreshExpiration=604800000
+🔹 What it does:
+
+Sets the expiration time for refresh tokens.
+604800000 milliseconds = 7 days (1 week).
+A refresh token allows users to get a new access token without logging in again.
+🔹 Why use a refresh token?
+
+Access tokens expire quickly (e.g., 1 day).
+Instead of forcing users to log in again, a refresh token can generate a new access token without requiring credentials.
+
+-----------------MAIL-----------------------------
+Configurations
+    1. spring.mail.host=smtp.gmail.com
+Purpose: Specifies the SMTP server address used to send the email.
+Explanation: This is the address of the Gmail SMTP server, which allows your application to send emails through Gmail.
+Gmail SMTP Server: smtp.gmail.com is the host name for Gmail's outgoing mail server.
+
+    2. spring.mail.port=587
+Purpose: Specifies the SMTP port used by the Gmail server to send emails.
+Explanation:
+Port 587 is the recommended port for sending emails securely using TLS (Transport Layer Security).
+Port 465 is also used for SSL (Secure Socket Layer), but port 587 with STARTTLS (as in your configuration) is generally preferred
+for better compatibility with modern email security practices.
+
+    3.spring.mail.username=your_email@gmail.com(System/Company email)
+Purpose: Specifies the username used to authenticate with the Gmail SMTP server.
+Explanation: This is the email address you will be sending emails from. Replace your_email@gmail.com with your actual Gmail address
+(or the email address you want to send notifications from).
+
+    4.spring.mail.password=your_email_password
+Purpose: Specifies the password for your Gmail account or an App Password (if you use 2-factor authentication).
+
+    5.spring.mail.properties.mail.smtp.auth=true
+Purpose: Specifies whether SMTP authentication is required.
+Explanation: This line tells the Spring Boot application to use SMTP authentication. When set to true, your application will authenticate itself with the SMTP server using the username and password you’ve provided.
+This is required to log in to the Gmail SMTP server and send emails.
+
+    6. spring.mail.properties.mail.smtp.starttls.enable=true
+Purpose: Enables STARTTLS encryption for communication between your application and the Gmail SMTP server.
+Explanation:
+STARTTLS is a command that upgrades an existing insecure connection to a secure (encrypted) one using TLS (Transport Layer Security).
+This line tells the application to force the use of STARTTLS when connecting to Gmail’s SMTP server, ensuring that the
+connection is encrypted during communication.
+
+    7.spring.mail.properties.mail.smtp.starttls.required=true
+Purpose: Enforces the STARTTLS encryption requirement.
+Explanation:
+This line makes it mandatory for the connection to use STARTTLS (encrypted communication).
+It ensures that if the connection doesn’t support STARTTLS, the communication will fail.
+It provides an additional layer of security for email communication by enforcing encryption.
+
+------------------LOGGING---------------------
+
+
+-----------------Project Structure---------------------
+📂 Employee Management System (EMS)
+│
+├── 📁 controller       (Handles API requests)
+├── 📁 service          (Business logic layer)
+├── 📁 repository       (Data access layer)
+├── 📁 model            (Database entities)
+├── 📁 dto              (Data transfer objects)
+├── 📁 security         (JWT authentication & security config)
+├── 📁 exception        (Custom error handling)
+├── 📁 config           (Application configurations)
+│
+└── 📂 resources
+    ├── 📄 application.properties (or application.yml)
+    ├── 📄 data.sql (Sample data - Optional)
+
